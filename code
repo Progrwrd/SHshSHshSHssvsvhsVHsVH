@@ -1,0 +1,179 @@
+from pygame import *
+from random import *
+win = 500
+winda = display.set_mode((700,win))
+mixer.init()
+score = 0
+score2o = 0
+arbspula = 15
+pulemot = 10
+
+figna = False
+lifeEnemy = 2
+font.init()
+font1 = font.SysFont(None,36)
+font2 = font.SysFont(None,36)
+mixer.music.load("space.mp3")
+kl = mixer.Sound("fire.ogg")
+ks = mixer.Sound("hit-effekt-quotmeteoritquot-25223-_mp3cut.net_.ogg")
+class GameSprite(sprite.Sprite):
+    def __init__(self,player_image,player_x,player_y,player_sizex,player_sizey,player_speed):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image),(50,50))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+        
+    def reset(self):
+        winda.blit(self.image,(self.rect.x, self.rect.y))
+    
+        
+back = transform.scale(image.load("ackround.jpg"),(700,500))
+game = True
+class chel(GameSprite):
+    def __init__(self,enemy_im,enemy_x,enemy_y,enrect_x,enrect_y):
+        self.enemy_im = enemy_im
+        self.enemy_x = enemy_x
+        self.enemy_y = enemy_y
+        
+    def reset():
+        winda.blit(self.enemy_im,(self.rect.x, self.rect.y))
+class plr(GameSprite):
+    def update(self):
+        press = key.get_pressed()
+        if press[K_a]:
+            ks.set_volume(100)
+            self.rect.x -= self.speed
+            ks.play()
+        else:
+            ks.set_volume(0)
+        if press[K_d]:
+            ks.set_volume(100)
+            self.rect.x += player.speed
+            ks.play()
+        else:
+            ks.set_volume(0)
+        if press[K_RIGHT]:
+            ks.set_volume(100)
+            self.rect.x += self.speed
+            ks.play()
+        else:
+            ks.set_volume(0)
+        if press[K_LEFT]:
+            ks.set_volume(100)
+            self.rect.x -= self.speed
+            ks.play()
+        else:
+            ks.set_volume(0)       
+    def lol(self):
+        
+
+        pula = nifigac("asteroid.png",self.rect.x,self.rect.y,12,12,3)
+        pulki.add(pula)
+        
+        
+    
+
+class figac(GameSprite):
+    def update(self):
+        self.rect.y += 3
+        global score2o
+        if self.rect.y >= win:
+            self.rect.y = 0
+            score2o += 1
+            self.rect.x = randint(80,win)
+            
+        
+class nifigac(GameSprite):
+    def update(self):
+        self.rect.y -= 1
+        if self.rect.y >= win:
+            #print("j")
+            pass
+        
+        
+       
+            
+        
+display.set_caption("ладна")
+clock = time.Clock()
+fps = 60
+
+pulki = sprite.Group()
+
+
+clock.tick(fps)
+
+player = plr('asteroid.png',100,400,100,100,20)
+mixer.music.play()
+img = 'asteroid.png'
+for i in range(5):
+    mis = sprite.Group()
+        
+    mi = figac('rocket.png',randint(-600,600),500,5,5,randint(1,5))
+    mis.add(mi)
+for ig in range(8):
+    misu = sprite.Group()
+        
+    mik = figac('NLO.jpg',randint(-600,600),500,5,5,randint(1,5))
+    misu.add(mik)    
+while game:
+    
+    winda.blit(back,(0,0))
+    
+    
+
+    
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+    
+        
+        
+        
+    press = key.get_pressed()
+    if press[K_SPACE]:
+        if pulemot != 0 and arbspula != 0:
+            print("space")
+            player.lol()
+            pulemot -= 1
+            
+        elif pulemot == 0 and arbspula != 0:
+            pulemot += 10
+            arbspula -= 1
+        else:
+            pulemot = 0
+            arbspula = 0
+    if score2o >= 70:
+        figna = True 
+    text2 = font2.render("Фига ты попуск " + str(score2o), True,(255,255,255) )
+    text = font1.render("Скор: "+ str(score),True,(255,255,255))
+    winda.blit(text,(10,20))
+    winda.blit(text2,(10,50))
+    
+    sprites_list = sprite.groupcollide(mis, pulki,True,True)
+    sprites_lists = sprite.groupcollide(misu, pulki,True,True)
+    for s in sprites_list:
+        score += 1
+        mi = figac('rocket.png',randint(-600,600),500,5,5,randint(1,5))
+        mis.add(mi)
+    for g in sprites_lists:
+        score += 3
+
+        mik = figac('NLO.jpg',randint(-600,600),500,5,5,randint(1,5))
+        misu.add(mik)
+    if figna == False:
+        mis.update()
+        misu.update()
+        pulki.update()
+        mis.draw(winda)
+        misu.draw(winda)
+        player.reset()
+        pulki.draw(winda)
+        player.update()
+    else:
+        print("ну канава")
+    
+    display.update()
+   
